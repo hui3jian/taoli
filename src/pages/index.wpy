@@ -1,0 +1,67 @@
+<style lang="less">
+  
+</style>
+<template>
+  <view class="container">
+    <panel>
+      123
+    </panel>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import Panel from '@/components/panel' // alias example
+  import Toast from 'wepy-com-toast'
+  import testMixin from '../mixins/test'
+
+  @connect({
+    // num (state) {
+    //   return state.counter.num
+    // },
+    // asyncNum (state) {
+    //   return state.counter.asyncNum
+    // },
+    // sumNum (state) {
+    //   return state.counter.num + state.counter.asyncNum
+    // }
+  })
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+      panel: Panel,
+      toast: Toast
+    }
+
+    mixins = [testMixin]
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+      toast () {
+        let promise = this.$invoke('toast', 'show', {
+          title: '自定义标题',
+          img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+        })
+
+        promise.then((d) => {
+          console.log('toast done')
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>
