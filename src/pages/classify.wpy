@@ -1,0 +1,190 @@
+<style lang="less">
+  .classify {
+    background: #fff;
+  }
+  .classify-main {
+    display: flex;
+    justify-items: start;
+  }
+  .classify-catetory {
+    width: 200rpx;
+    background: #f4f4f4;
+  }
+  .classify-catetory__menu {
+    position: relative;
+    font-size: 30rpx;
+    line-height: 100rpx;
+    text-align: center;
+    color: #999;
+    &::before {
+      content: '';
+      position: absolute;
+      height: 30rpx;
+      top: 50%;
+      left: 0;
+      margin-top: -15rpx;
+      width: 8rpx;
+      background-color: #f4f4f4;
+    }
+    &.on {
+      color: #333;
+      background-color: #fff;
+      &::before { background-color: #f04048; }
+    }
+  }
+  .classify-detail {
+    width: calc(100% - 200rpx);
+  }
+  .classify-detail__product {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    .classify-detail__product--box {
+      box-sizing: border-box;
+      padding: 30rpx;
+      width: 50%;
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+</style>      
+
+<template>
+  <view class="classify">
+    <!-- 淘一淘店铺内礼品 -->
+    <TlSearch background="none" />
+
+    <view class="classify-main" style="{{ 'height:' + (systemInfo.windowHeight - 60) + 'px' }}">
+      <!-- 左侧菜单 -->
+      <scroll-view 
+        class="classify-catetory"
+        scroll-y
+        scroll-with-animation
+        style="height: 100%;">
+        <repeat for="{{ catetoryData }}" key="index" index="index" item="item">
+          <view 
+            class="classify-catetory__menu {{ selectedCate === item.value ? 'on' : '' }}"
+            @tap="selected({{item.value}})">
+            {{ item.label }}
+          </view>
+        </repeat>
+      </scroll-view>
+      
+      <!-- 右侧详情 -->
+      <scroll-view 
+        class="classify-detail"
+        scroll-y 
+        scroll-with-animation 
+        style="height: 100%;">
+        <view class="classify-detail__product" wx:if="{{ cateDetail.length }}">
+          <repeat for="{{ cateDetail }}" key="index" index="index" item="item">
+            <view class="classify-detail__product--box">
+              <TlCard
+                style="classify-detail__product__card" 
+                :title.sync="item.name"
+                :img.sync="item.medium"
+              />
+            </view>
+          </repeat>
+        </view>
+        <TlLoading wx:else :showType.sync="loadingStatus"/>
+      </scroll-view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import requset from '../utils/request.js'
+  import TlSearch from '@/components/search'
+  import TlCard from '@/components/card'
+  import TlLoading from '@/components/loading'
+
+  export default class Classify extends wepy.page {
+    config = {
+      navigationBarTitleText: '淘礼分类'
+    }
+
+    components = {
+      TlSearch, TlCard, TlLoading
+    }
+
+    data = {
+      systemInfo: '',
+      catetoryData: [],
+      selectedCate: 0,
+      cateDetail: [],
+      loading: false,
+      status: false
+    }
+
+    computed = {
+      loadingStatus () {
+        if (this.loading) {
+          return 'loading'
+        } else {
+          if (this.cateDetail.length === 0) return 'empty'
+        }
+      }
+    }
+
+    methods = {
+      selected(id) {
+        if (id === this.selectedCate) return
+        this.selectedCate = id
+        this.getDetail()
+      }
+    }
+
+    async onLoad() {
+      this.systemInfo = wepy.getSystemInfoSync()
+
+      this.getCatetory()
+      this.getDetail()
+    }
+
+    /* 接口 */
+    getCatetory() {
+      // 获取分类数据
+      const _this = this
+      requset.get('/pc/productCategory/getProductCategory.jhtml', {
+      })
+        .then(res => {
+          const data = res.data
+          _this.catetoryData = data.data || []
+          _this.catetoryData.unshift({ value: 0, label: '全部' })
+          _this.$apply()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    getDetail() {
+      // 获取类别对应的产品数据
+      const _this = this
+      _this.loading = true
+      requset.get('mobile/product/list.jhtml', {
+        pageNumber: 1,
+        pageSize: 9999,
+        orderType: 'salesDesc',
+        productCategoryId: _this.selectedCate || '',
+        search: ''
+      })
+        .then(res => {
+          const data = res.data
+          _this.cateDetail = data.returnValue.products || []
+          _this.loading = false
+          _this.$apply()
+        })
+        .catch(err => {
+          _this.loading = false
+          console.log(err)
+        })
+    }
+  }
+</script>

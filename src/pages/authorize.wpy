@@ -1,0 +1,171 @@
+<style lang="less">
+@import '../assets/style/mixins.less';
+.authorize-mask {
+  .position(0, 0, 0, 0);
+  .opacity(0.5);
+  background: #000;
+}
+
+.authorize { 
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 4px;
+}
+.authorize-header {
+  .font(22px, 26px, #222, left, 100);
+  margin: 20px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.authorize-body {
+  padding: 0 20px;
+}
+.authorize-body__title {
+  .font(14px, 26px, #3a3a3a, left, 100);
+}
+.authorize-body__list {
+  .font(14px, 20px, #666, left, 100);
+  padding-left: 10px;
+  position: relative;
+  text {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      margin-top: -2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: #666; 
+    }
+  }
+}
+
+.authorize-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
+}
+.authorize-footer__btn--simple {
+  border: 1px solid #666;
+  min-width: 100px;
+}
+</style>
+
+<template>
+  <view wx:if="{{ !loading }}">
+    <view class="authorize-mask"></view>
+    <view wx:if="{{ canIUse }}" class="authorize">
+      <view class="authorize-header">
+        微信授权
+      </view>
+      <view class="authorize-body">
+        <text class="authorize-body__title">淘礼申请获得以下权限：</text>
+        <view class="authorize-body__list">
+          <text>获得你的公开信息（昵称、头像等）</text>
+        </view>
+      </view>
+      <view class="authorize-footer">
+        <button 
+          class="authorize-footer__btn--simple"
+          type="default"
+          lang="zh_CN"
+          bindtap="cancelBind"
+        >取消</button>
+        <button 
+          class="authorize-footer__btn" 
+          type="primary"
+          open-type="getUserInfo"
+          lang="zh_CN" 
+          bindgetuserinfo="bindGetUserInfo"
+        >授权登陆</button>
+      </view>
+    </view>
+    <view wx:else>请升级您的微信版本</view>
+  </view>
+  <view wx:else></view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Authorize extends wepy.page {
+  config = {
+    navigationBarTitleText: '授权登陆'
+  }
+
+  data = {
+    // 判断小程序的API，回调，参数，组件等是否在当前版本可用。
+    canIUse: wepy.canIUse('button.open-type.getUserInfo'),
+    loading: true
+  }
+
+  /**
+   * 生命周期
+  */
+  async onLoad() {
+    await this.getStorageUserInfo()
+  }
+
+  /**
+   * 自定义函数
+   */
+  getStorageUserInfo () {
+    // 获取缓存的信息
+    const _this = this
+    return new Promise((resolve, reject) => {
+      wx.getStorage({
+        key: 'userInfo',
+        success(res) {
+          resolve(res.data)
+          _this.$parent.globalData.userInfo = res.data
+          wepy.switchTab({
+            url: '/pages/index'
+          })
+        },
+        fail(err) {
+          _this.loading = false
+          reject(err)
+        }
+      })
+    })
+  }
+
+  bindGetUserInfo(e) {
+    // 用户授权
+    if (e.detail.userInfo) {
+      this.$parent.globalData.userInfo = e.detail.userInfo
+      wepy.setStorage({
+        key: 'userInfo',
+        data: e.detail.userInfo
+      })
+      this.loading = false
+      wepy.switchTab({
+        url: '/pages/index'
+      })
+    }
+  }
+
+  cancelBind() {
+    // 用户不授权
+    wepy.showModal({
+      title: '警告',
+      content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!',
+      showCancel: false,
+      confirmText: '返回授权',
+      success: function(res) {
+        if (res.confirm) {
+          console.log('用户点击返回授权')
+        }
+      }
+    })
+  }
+}
+</script>

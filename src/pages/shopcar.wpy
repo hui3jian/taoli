@@ -1,0 +1,27 @@
+<style lang="less">
+  .shopcar-item {
+    margin: 20rpx;
+  }
+</style>
+
+<template>
+  <view class="shopcar">
+    <view class="shopcar-item">
+      <TlCard 
+      title="测试" 
+      img="http://www.niuduxiu.com/upload/image/201710/af14d403-6409-4a67-8136-4d42d5828d5c.jpg" 
+      price="12" 
+      type="row"/>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import TlCard from '@/components/card'
+
+  export default class Shopcar extends wepy.page {
+    components = {
+      TlCard
+    }
+  }
+</script>

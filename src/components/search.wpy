@@ -1,0 +1,75 @@
+<style lang="less">
+.tl-search {
+  padding: 18rpx 60rpx;
+  height: 80rpx;
+  border-bottom: 1px solid #eee;
+  background: linear-gradient(to right, #ea6f5a 0%, #dc4f37, 50%, #ea6f5a 100%);
+  &.tl-search-bg--none {
+    background: #fff;
+    border-top: 1px solid #ccc;
+    .tl-search__icon { color: #999; }
+    .tl-search__input { color: #4a4a4a; }
+    .tl-search__input--placeholder { color: #999; }
+  }
+}
+.tl-search__box {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  padding: 5rpx 15rpx;
+  margin-top: 9rpx;
+  border-radius: 35rpx;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.tl-search__icon {
+  margin: 0 25rpx 0 15rpx;
+  color: #fff;
+  font-size: 34rpx;
+}
+.tl-search__input {
+  color: #fff;
+
+}
+.tl-search__input--placeholder {
+  color: #fff;
+  font-size: 30rpx;
+}
+</style>
+
+<template>
+  <view class="tl-search {{ 'tl-search-bg--' + background }}">
+    <view class="tl-search__box">
+      <text class="tl-search__icon iconfont icon-sousuo"></text>
+      <input class="tl-search__input" placeholder="淘一淘店铺内礼品" placeholder-class="tl-search__input--placeholder" type="text" />
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class TlSearch extends wepy.component {
+  props = {
+    background: {
+      type: String,
+      default: 'red' // 背景， 可选red || none ||
+    }
+  }
+
+  data = {
+
+  }
+
+  computed = {
+
+  }
+
+  methods = {
+
+  }
+
+  onLoad() {
+
+  }
+}
+</script>

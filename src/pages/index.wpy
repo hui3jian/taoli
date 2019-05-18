@@ -1,67 +1,270 @@
 <style lang="less">
-  
+@import '../assets/style/mixins.less';
+.index {
+  background: #eee;
+  swiper image { width: 100%; }
+}
+
+.index-classfify {
+  margin-bottom: 10px;
+}
+.index-classfify__assuraance {
+  display: flex;
+  justify-content: space-around;
+  font-size: 28rpx;
+  line-height: 58rpx;
+  background: #f2f2f2;
+  .iconfont { 
+    font-size: 30rpx; 
+    color: #339ace;
+    vertical-align: top;
+  }
+}
+.index-classfify__colimn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+.index-classfify__colimn__item {
+  text {
+    display: block;
+    text-align: center;
+  }
+  .iconfont {
+    font-size: 68rpx;
+    color: #ffc400;
+  }
+  .title {
+    font-size: 28rpx;
+    color: #3a3a3a;
+  }
+}
+
+.index-recomm {
+  background: #fff;
+  padding: 30rpx 40rpx;
+  margin-bottom: 20rpx;
+}
+.index-recomm__title {
+  .font(36rpx, 50rpx, #3a3a3a, center, bold);
+  display: block;
+}
+.index-recomm__entitile {
+  .font(24rpx, 36rpx, #999, center, 100);
+  display: block;
+  margin-bottom: 10px;
+}
+.index-recomm__picture {
+  display: block;
+  width: 100%;
+  height: 256rpx;
+}
+
+.index-recomm__cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20rpx 0;
+}
+.index-recomm__cards__item {
+  width: 30%;
+  margin-bottom: 22rpx;
+}
+.index-recomm__more {
+  display: block;
+  .font(28rpx, 28rpx, #339ace, center);
+}
 </style>
-<template>
-  <view class="container">
-    <panel>
-      123
-    </panel>
+
+ <template>
+  <view class="index">
+    <!-- 淘一淘店铺内礼品 -->
+    <TlSearch />
+
+    <!-- 轮播图 -->
+    <swiper indicator-dots autoplay circular>
+        <repeat for="{{ swiperData }}" key="index" index="index" item="item">
+          <swiper-item>
+            <image mode="aspectFill" src="{{ item.indexImage }}"></image>
+          </swiper-item>
+        </repeat>
+    </swiper>
+
+    <!-- 分类 -->
+    <view class="index-classfify">
+      <view class="index-classfify__assuraance">
+        <view>
+          <text class="iconfont icon-jilu"></text> 全网比价
+        </view>
+        <view>
+          <text class="iconfont icon-check-circle"></text> 品质保证
+        </view>
+        <view>
+          <text class="iconfont icon-jiangpai"></text> 七天退换
+        </view>
+      </view>
+
+      <view class="index-classfify__colimn">
+        <repeat for="{{ classfifyData }}" key="index" index="index" item="item">
+          <view class="index-classfify__colimn__item">
+            <text class="iconfont {{ item.icon }}"></text>
+            <view class="title">{{ item.title }}</view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+
+    <!-- 推荐 -->
+    <repeat for="{{ recommData }}" key="index" index="index" item="item">
+      <view class="index-recomm">
+        <text class="index-recomm__title">{{ item.title }}</text>
+        <text class="index-recomm__entitile">{{ item.enTitle }}</text>
+        <image 
+          class="index-recomm__picture"
+          src="{{ item.imgUrl }}" 
+          mode="scaleToFill"
+          lazy-load="false"
+        >
+        </image>
+        <view class="index-recomm__cards">
+          <repeat for="{{ item.data }}" key="index2" index="index2" item="item2">
+            <view class="index-recomm__cards__item">
+              <TlCard 
+                :title.sync="item2.name"
+                :subTitle.sync="item2.productCategory.name"
+                :price.sync="item2.price"
+                :img.sync="item2.medium"
+              >
+              </TlCard>
+            </view>
+          </repeat>
+        </view>
+        <view class="index-recomm__more">更多</view>
+      </view>
+    </repeat>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import { connect } from 'wepy-redux'
-  import Panel from '@/components/panel' // alias example
-  import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
+  import requset from '../utils/request.js'
 
-  @connect({
-    // num (state) {
-    //   return state.counter.num
-    // },
-    // asyncNum (state) {
-    //   return state.counter.asyncNum
-    // },
-    // sumNum (state) {
-    //   return state.counter.num + state.counter.asyncNum
-    // }
-  })
+  // import { connect } from 'wepy-redux'
+  // import { INCREMENT, DECREMENT } from '../store/types/counter'
+  // import { asyncInc } from '../store/actions'
+  // @connect({
+  //   num(state) {
+  //     return state.counter.num
+  //   },
+  //   asyncNum(state) {
+  //     return state.counter.asyncNum
+  //   }
+  // }, {
+  //   increment: INCREMENT,
+  //   decrement: DECREMENT,
+  //   asyncIncrement: asyncInc
+  // })
+
+  /** 组件 **/
+  import TlSearch from '@/components/search'
+  import TlCard from '@/components/card'
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '淘礼首页'
     }
+
     components = {
-      panel: Panel,
-      toast: Toast
+      TlSearch, TlCard
     }
-
-    mixins = [testMixin]
-
+  
     data = {
+      swiperData: [],
+      classfifyData: [
+        { id: 1, title: '潮流穿搭', icon: 'icon-gouwudai' },
+        { id: 2, title: '房屋友人', icon: 'icon-zhuye' },
+        { id: 3, title: '吃货星球', icon: 'icon-dangao' },
+        { id: 4, title: '数码烧友', icon: 'icon-xiangji' },
+        { id: 4, title: '创意达人', icon: 'icon-dianzan' }
+      ],
+      recommData: [
+        {
+          id: 1,
+          title: '每周特惠',
+          enTitle: 'WEEKLY BENEFITS',
+          imgUrl: 'http://image-c.weimobwmc.com/saas-wxbiz/714fda8b7640446885ca21dbf9fab5c0.png?imageMogr2/thumbnail/750x',
+          data: []
+        },
+        {
+          id: 1,
+          title: '本周上新',
+          enTitle: 'NEW THIS WEEK',
+          imgUrl: 'http://image-c.weimobwmc.com/saas-wxbiz/e1b31c4f33d34dbd9ec88102b55606c1.png?imageMogr2/thumbnail/750x',
+          data: []
+        },
+        {
+          id: 1,
+          title: '热销推荐',
+          enTitle: 'RECOMMENDED SALE',
+          imgUrl: 'http://image-c.weimobwmc.com/saas-wxbiz/77cf01a5f56a49be8e5b2c231f2c3c8d.png?imageMogr2/thumbnail/750x',
+          data: []
+        }
+      ]
     }
 
     computed = {
     }
 
     methods = {
-      toast () {
-        let promise = this.$invoke('toast', 'show', {
-          title: '自定义标题',
-          img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
-        })
-
-        promise.then((d) => {
-          console.log('toast done')
-        })
-      }
     }
 
-    events = {
+    async onLoad() {
+      this.getLunboData()         // 获取轮播图数据
+      this.getRecommData(0)     // 获取产品介绍数据
+      this.getRecommData(1)     // 获取产品介绍数据
+      this.getRecommData(2)     // 获取产品介绍数据
     }
 
-    onLoad() {
+    /* 接口 */
+    getLunboData() {
+      // 获取轮播图数据
+      const _this = this
+      requset.get('/transform/findindex.jhtml', {
+        type: 0,
+        id: '',
+        pageNumber: 1,
+        pageSize: 10
+      })
+        .then(res => {
+          const data = res.data
+          _this.swiperData = data.returnValue.content
+          _this.$apply()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    getRecommData(type) {
+      // 获取产品介绍数据
+      const _this = this
+      requset.get('/mobile/product/list.jhtml', {
+        orderType: 'salesDesc',
+        search: '',
+        pageNumber: type + 1,
+        pageSize: 6,
+        productCategoryId: ''
+      })
+        .then(res => {
+          const data = res.data.returnValue.products || []
+          _this.recommData[type]['data'] = data
+          _this.$apply()
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 </script>

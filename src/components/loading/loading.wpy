@@ -1,0 +1,6 @@
+<template>
+  <view class="tl-loading">
+    <view class="tl-loading-mask"></view>
+    <view class="tl-loading-main"></view>
+  </view>
+</template>
