@@ -1,0 +1,45 @@
+<style lang="less">
+  .tl-counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    min-width: 100rpx;
+    width: 100%;
+  }
+  .tl-counter__reduce, .tl-counter__add, .tl-counter__input {
+    border: 1px solid #eee;
+    height: 50rpx;
+    line-height: 50rpx;
+    color: #5a5a5a;
+  }
+  .tl-counter__reduce, .tl-counter__add {
+    width: 20%;
+    padding: 0 6rpx;
+    text-align: center;
+    height: 100%;
+  }
+  .tl-counter__input {
+    font-size: 28rpx;
+    width: 50%;
+    text-align: center;
+  }
+</style>
+
+<template>
+  <view class="tl-counter">
+    <view class="tl-counter__reduce"> - </view>
+    <input class="tl-counter__input" bindinput="onchange" placeholder="" />
+    <view class="tl-counter__add"> + </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class TlCounter extends wepy.component {
+  methods = {
+    onchange(e) {
+      console.log(e)
+    }
+  }
+}
+</script>

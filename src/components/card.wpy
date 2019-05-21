@@ -53,7 +53,7 @@
 </style>
 
 <template>
-  <view class="tl-card {{ 'tl-card-' + size }} {{ border ? 'tl-card-border' : '' }} {{ 'tl-card-' + type }}">
+  <view class="tl-card {{ 'tl-card-' + size }} {{ border === 'true' ? 'tl-card-border' : '' }} {{ 'tl-card-' + type }}">
     <view class="tl-card-img">
       <image 
         src="{{ img || '' }}" 
@@ -106,8 +106,8 @@ export default class TlCard extends wepy.component {
     },
     // 是否显示边框
     border: {
-      type: Boolean,
-      default: true
+      type: String,
+      default: 'true'
     },
     // 展示类型： 可选col || row
     type: {

@@ -1,27 +1,99 @@
 <style lang="less">
   .shopcar-item {
+    display: flex;
+    justify-content: space-between;
     margin: 20rpx;
+    border: 1px solid #eee;
+  }
+  .shopcar-item__goods {
+    width: calc(100% - 100prx);
+  }
+  .shopcar-item__opreating {
+    width: 174rpx;
+    padding: 12rpx;
+  }
+  .shopcar-item__opreating__checkbox {
+    margin-bottom: 24rpx;
+    overflow: hidden;
+    checkbox { float: right; }
+  }
+  .shopcar-item__opreating__counter {
+    padding-right: 10rpx;
+  }
+
+  .shopcar--nogoods {
+    padding: 60rpx 40rpx;
+    text-align: center;
+    .iconfong {
+      font-size: 40rpx;
+    }
+  }
+  .shopcar--nogoods-tips {
+    margin-top: 40rpx;
+    font-size: 28rpx;
+    color: #888;
+    button {
+      margin-top: 24rpx;
+    }
   }
 </style>
 
 <template>
   <view class="shopcar">
-    <view class="shopcar-item">
-      <TlCard 
-      title="测试" 
-      img="http://www.niuduxiu.com/upload/image/201710/af14d403-6409-4a67-8136-4d42d5828d5c.jpg" 
-      price="12" 
-      type="row"/>
+    <!-- 购物车有货品 -->
+    <checkbox-group bindchange="checkboxChange">
+      <view class="shopcar-item">
+        <view class="shopcar-item__goods">
+          <TlCard 
+            title="测试" 
+            img="http://www.niuduxiu.com/upload/image/201710/af14d403-6409-4a67-8136-4d42d5828d5c.jpg" 
+            price="12" 
+            type="row"
+            border="false"  
+          />
+        </view>
+
+        <view class="shopcar-item__opreating">
+          <view class="shopcar-item__opreating__checkbox">
+            <checkbox value="{{checkitem.value}}" checked="{{checkitem.checked}}" name="id" color="#339ace" /> 
+          </view>
+          <view class="shopcar-item__opreating__counter">
+            <TlCounter />
+          </view>
+        </view>
+      </view>
+    </checkbox-group>
+
+    <!-- 购物车没有货品 -->
+    <view class="shopcar--nogoods">
+      <text class="iconfong icon-youjian"></text>
+      <view class="shopcar--nogoods-tips">
+        您的购物车居然是空的，去看看商品吧！
+        <button type="default" size="mini">去看kan </button>
+      </view>
     </view>
   </view>
+
 </template>
 <script>
   import wepy from 'wepy'
   import TlCard from '@/components/card'
+  import TlCounter from '@/components/counter'
 
   export default class Shopcar extends wepy.page {
     components = {
-      TlCard
+      TlCard,
+      TlCounter
+    }
+
+    data = {
+      checkitem: { name: '1', checked: 'true', value: 'yi' }
+    }
+
+    methods = {
+      checkboxChange(e) {
+        console.log(e)
+      }
     }
   }
 </script>
