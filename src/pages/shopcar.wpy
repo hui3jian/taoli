@@ -24,8 +24,9 @@
   .shopcar--nogoods {
     padding: 60rpx 40rpx;
     text-align: center;
-    .iconfong {
-      font-size: 40rpx;
+    .iconfont {
+      font-size: 80rpx;
+      color: #999;
     }
   }
   .shopcar--nogoods-tips {
@@ -66,10 +67,10 @@
 
     <!-- 购物车没有货品 -->
     <view class="shopcar--nogoods">
-      <text class="iconfong icon-youjian"></text>
+      <text class="iconfont icon-cunqian"></text>
       <view class="shopcar--nogoods-tips">
         您的购物车居然是空的，去看看商品吧！
-        <button type="default" size="mini">去看kan </button>
+        <button type="default" size="mini">去看KAN </button>
       </view>
     </view>
   </view>

@@ -84,6 +84,7 @@
             <view class="classify-detail__product--box">
               <TlCard
                 style="classify-detail__product__card" 
+                :id.sync="item.goodsId"
                 :title.sync="item.name"
                 :img.sync="item.medium"
               />

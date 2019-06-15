@@ -28,7 +28,7 @@
 <template>
   <view class="tl-counter">
     <view class="tl-counter__reduce"> - </view>
-    <input class="tl-counter__input" bindinput="onchange" placeholder="" />
+    <input class="tl-counter__input" bindinput="onchange" placeholder="" value="{{ counts }}" />
     <view class="tl-counter__add"> + </view>
   </view>
 </template>
@@ -36,6 +36,10 @@
 <script>
 import wepy from 'wepy'
 export default class TlCounter extends wepy.component {
+  data = {
+    counts: 1
+  }
+
   methods = {
     onchange(e) {
       console.log(e)

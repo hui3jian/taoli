@@ -1,0 +1,289 @@
+<style lang="less">
+  @import '../assets/style/mixins.less';
+  .detail {
+    position: relative;
+    padding-bottom: 100rpx;
+  }
+
+  .detail__swiper {
+    height: 500rpx;
+    image { width: 100%; }
+    .swiper-images {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
+  
+  .detail__info {
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+    margin-bottom: 40rpx;
+    background-color: #f4f4f4;
+  }
+  .detail__title {
+    .font(36rpx, 1, #000, left, bold);
+    padding: 30rpx;
+    margin-bottom: 10rpx;
+  }
+  .detail__price {
+    .font(24rpx, 1, #f04048, left);
+    padding: 0 30rpx;
+    margin-bottom: 10rpx;
+    text { font-size: 40rpx; }
+  }
+  .detail__cost {
+    .font(24rpx, 1, #999, left);
+    margin-bottom: 30rpx;
+    padding: 0 30rpx;
+    .detail__cost--del { position: relative; }
+    .detail__cost--del::after {  
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12rpx;
+      border-bottom: 1px solid #999;
+    }
+    .detail__cost--nor { float: right; }
+  }
+
+  .detail__color {
+    .font(30rpx, 1, #2a2a2a, left);
+    padding: 0 30rpx;
+    margin-bottom: 40rpx;
+  }
+  .detail__color__main {
+    display: flex;
+    justify-content: flex-start;
+    image {  
+      width: 100rpx;
+      height: 100rpx;
+      margin-right: 20rpx;
+      margin-top: 20rpx;
+      padding: 10rpx;
+      border: 1px solid #eee;
+      &.on {
+        border-color: #339ace;
+      }
+    }
+  }
+
+  .detail__number {
+    .font(30rpx, 1, #2a2a2a, left);
+    .clearfix();
+    padding: 0 30rpx;
+    margin-bottom: 40rpx;
+    border-bottom: 1px solid #eee;
+  }
+  .detail__number__label {
+    float: left;
+    line-height: 18rpx;
+  }
+  .detail__number__main {
+    float: left;
+    margin-left: 10rpx;
+    display: flex;
+    justify-content: flex-start;
+    padding-bottom: 40rpx;
+    text {
+      display: inline-block;
+      padding: 10rpx 30rpx;
+      border: 1px solid #eee;
+      margin: 0 10rpx;
+    }
+    input {
+      border: 1px solid #eee;
+      text-align: center;
+      width: 100rpx;
+    }
+  }
+
+  .detail__goods {
+    text {
+      .font(30rpx, 1, #2a2a2a, center, bold);
+      display: block;
+      margin-bottom: 20rpx;
+    }
+    image {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  .detail__bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100rpx;
+    display: flex;
+    justify-content: flex-start;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+  }
+  .detail__bottom__other {
+    width: 100rpx;
+    padding: 10rpx 0;
+    .font(24rpx, 1.4, #666, center);
+    .iconfont {
+      display: block;
+    }
+  }
+  .detail__bottom__btn--colorva,
+  .detail__bottom__btn--colorvb {
+    .font(34rpx, 100rpx, #fff, center, bold);
+    display: inline-block;
+    width: calc(50% - 150rpx);
+  }
+  .detail__bottom__btn--colorva {
+    background: #454552;
+  }
+  .detail__bottom__btn--colorvb {
+    background: #e85a71;
+  }
+</style>
+
+<template>
+  <view class="detail">
+    <!-- 轮播图 -->
+    <swiper 
+      class="detail__swiper"
+      indicator-dots
+      autoplay
+      circular>
+      <repeat 
+        for="{{ swiperData }}"
+        key="index"
+        index="index"
+        item="item">
+        <swiper-item>
+          <view class="swiper-images" style="background-image: url({{item}})"></view>
+          <!-- <image 
+            mode="aspectFill"
+            src="{{ item }}">
+          </image> -->
+        </swiper-item>
+      </repeat>
+    </swiper>
+
+    <view class="detail__info">
+      <!-- 名称 -->
+      <view class="detail__title">{{ allData.name || '' }}</view>
+
+      <!-- 价格 -->
+      <view class="detail__price">
+        销售价￥<text>{{ allData.price || '' }}</text>
+      </view>
+
+      <!-- 原价 -->
+      <view class="detail__cost">
+        <text class="detail__cost--del">市场价￥{{ allData.marketPrice || '' }}</text>
+        <text class="detail__cost--nor">销量：{{ allData.stock || '' }}件</text>
+      </view>
+    </view>
+
+    <!-- 颜色 -->
+    <view class="detail__color">
+      颜色：
+      <view class="detail__color__main">
+        <repeat for="{{specifications}}" key="index" index="index" item="item">
+          <image class="{{index === 0 ? 'on' : ''}}" src="{{item.name}}"></image>
+        </repeat>
+      </view>
+    </view>
+
+    <!-- 数量 -->
+    <view class="detail__number">
+      <text class="detail__number__label">
+        购买数量：
+      </text>
+      <view class="detail__number__main">
+        <text>-</text>
+        <input class="" bindinput="onchange" placeholder="" value="{{ counts }}" />
+        <text>+</text>
+      </view>
+    </view>
+
+
+    <!-- 商品展示 -->
+    <view class="detail__goods">
+      <text>商品信息</text>
+      <repeat for="{{goodsData}}" key="index" index="index" item="item">
+        <image src="{{item.medium}}" mode="scaleToFill"
+          lazy-load="false">
+        </image>
+      </repeat>
+    </view>
+
+    <!-- 操作 -->
+    <view class="detail__bottom">
+      <view class="detail__bottom__other">
+        <text class="iconfont icon-wode"></text>
+        我的
+      </view>
+      <view class="detail__bottom__other">
+        <text class="iconfont icon-gouwuche"></text>
+        购物车
+      </view>
+      <view class="detail__bottom__other">
+        <text class="iconfont icon-zhuye"></text>
+        店铺
+      </view>
+      <text class="detail__bottom__btn--colorva">加入购物车</text>
+      <text class="detail__bottom__btn--colorvb">立即购买</text>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import requset from '../utils/request.js'
+
+  export default class Detail extends wepy.page {
+    data = {
+      swiperData: [],
+      allData: {},
+      specifications: [], // 颜色信息
+      goodsData: [],
+      counts: 1
+    }
+
+    onLoad(options) {
+      this.pid = options.id
+      this.getProduct()
+    }
+
+    onchange() {}
+
+    /* 接口 */
+    getProduct(id = 0) {
+      const _this = this
+      requset.get('/mobile/product/detail/' + (id || this.pid) + '.jhtml', {
+        pingNum: 1,
+        memberId: ''
+      })
+        .then(res => {
+          const data = res.data
+
+          // 轮播信息
+          data.returnValue.map((item, key) => {
+            if (key === 0) {
+              _this.allData = item || {}
+              _this.specifications = item.specifications[0]['values'] || []
+              _this.goodsData = item.productImages
+            }
+            _this.swiperData.push(item.image)
+          })
+          _this.$apply()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+</script>

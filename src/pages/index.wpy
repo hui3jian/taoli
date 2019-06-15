@@ -88,7 +88,9 @@
     <swiper indicator-dots autoplay circular>
         <repeat for="{{ swiperData }}" key="index" index="index" item="item">
           <swiper-item>
-            <image mode="aspectFill" src="{{ item.indexImage }}"></image>
+            <!-- <navigator url="../pages/detail?id={{ item.id }}" open-type="navigate" hover-class="none"> -->
+              <image mode="aspectFill" src="{{ item.indexImage }}"></image>
+            <!-- </navigator> -->
           </swiper-item>
         </repeat>
     </swiper>
@@ -109,10 +111,12 @@
 
       <view class="index-classfify__colimn">
         <repeat for="{{ classfifyData }}" key="index" index="index" item="item">
-          <view class="index-classfify__colimn__item">
-            <text class="iconfont {{ item.icon }}"></text>
-            <view class="title">{{ item.title }}</view>
-          </view>
+          <navigator url="../pages/classify" open-type="navigate" hover-class="none">
+            <view class="index-classfify__colimn__item">
+              <text class="iconfont {{ item.icon }}"></text>
+              <view class="title">{{ item.title }}</view>
+            </view>
+          </navigator>
         </repeat>
       </view>
     </view>
@@ -132,13 +136,15 @@
         <view class="index-recomm__cards">
           <repeat for="{{ item.data }}" key="index2" index="index2" item="item2">
             <view class="index-recomm__cards__item">
-              <TlCard 
-                :title.sync="item2.name"
-                :subTitle.sync="item2.productCategory.name"
-                :price.sync="item2.price"
-                :img.sync="item2.medium"
-              >
-              </TlCard>
+                <TlCard 
+                  :id.sync="item2.goodsId"
+                  :title.sync="item2.name"
+                  :subTitle.sync="item2.productCategory.name"
+                  :price.sync="item2.price"
+                  :img.sync="item2.medium"
+                >
+                </TlCard>
+              </navigator>
             </view>
           </repeat>
         </view>

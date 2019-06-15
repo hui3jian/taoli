@@ -1,11 +1,92 @@
+<style lang="less">
+@import '../assets/style/mixins.less';
+.user {
+  background-color: #f1f1f1;
+}
+
+.user__header {
+  background-color: #339ace;
+  padding: 80rpx 0;
+  margin-bottom: 20rpx;
+}
+.user__header__img {
+  display: block;
+  width: 140rpx;
+  height: 140rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.user__header__name {
+  .font(14px, 22px, #fff);
+}
+
+.user__menu {
+  border-top: 1px solid #eee;
+  background-color: #fff;
+}
+.user__menu__item {
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  line-height: 22px;
+  border-bottom: 1px solid #f1f1f1;
+}
+.user__menu__item__left {
+  .font(14px, 22px, #5a5a5a, left);
+  .iconfont { margin-right: 5px; }
+}
+.user__menu__item__right {
+  color: #999;
+}
+</style>
 <template>
-  <view>
-    User
+  <view class="user">
+    <view class="user__header">
+      <image 
+        class="user__header__img"
+        src="{{ userInfo.avatarUrl }}" 
+        mode="scaleToFill"
+        lazy-load="false">
+      </image>
+      <view class="user__header__name">{{ userInfo.nickName }}</view>
+    </view>
+
+    <view class="user__menu">
+      <!-- 我的消息 -->
+      <view class="user__menu__item">
+        <view class="user__menu__item__left">
+          <text class="iconfont icon-liaotian"></text>
+          我的消息
+        </view>
+        <view class="user__menu__item__right">
+          >
+        </view>
+      </view>
+      <!-- 我的积分 -->
+      <view class="user__menu__item">
+        <view class="user__menu__item__left">
+          <text class="iconfont icon-youhuiquan"></text>
+          我的积分
+        </view>
+        <view class="user__menu__item__right">
+          >
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 export default class User extends wepy.page {
+  data = {
+    userInfo: {}
+  }
 
+  onLoad() {
+    if (this.$parent.globalData.userInfo) {
+      this.userInfo = this.$parent.globalData.userInfo
+    }
+  }
 }
 </script>

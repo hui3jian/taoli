@@ -53,6 +53,7 @@
 </style>
 
 <template>
+  <navigator url="../pages/detail?id={{ id }}" open-type="navigate" hover-class="none">
   <view class="tl-card {{ 'tl-card-' + size }} {{ border === 'true' ? 'tl-card-border' : '' }} {{ 'tl-card-' + type }}">
     <view class="tl-card-img">
       <image 
@@ -72,12 +73,17 @@
       </view>
     </view>
   </view>
+  </navigator>
 </template>
 
 <script>
 import wepy from 'wepy'
 export default class TlCard extends wepy.component {
   props = {
+    id: {
+      type: [Number, String],
+      default: '331'
+    },
     title: {
       type: String,
       default: ''
